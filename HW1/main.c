@@ -61,8 +61,9 @@ int main() {
 
     __builtin_enable_interrupts();
 
-    _CP0_SET_COUNT(0);
+    int current_time = 0;
     int hold = 0;
+    _CP0_SET_COUNT(0);
     while(1) {
 	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 		  // remember the core timer runs at half the CPU speed
@@ -74,11 +75,13 @@ int main() {
             _CP0_SET_COUNT(0);
         }
         
-        int current_time = 0;
-        while(PORTBbits.RB4 == 0) {
+        if (PORTBbits.RB4 == 0) {
             current_time = _CP0_GET_COUNT();
-            hold = 1;
-        }
+            while (PORTBbits.RB4 == 0) {
+                hold = 1;
+            }
+        } 
+
         if (hold == 1) {
             _CP0_SET_COUNT(current_time);
             hold = 0;
