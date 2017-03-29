@@ -55,11 +55,34 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
+    TRISBbits.TRISB4 = 1;   // Button is input
+    TRISAbits.TRISA4 = 0;   // LED is output
+    LATAbits.LATA4 = 1;     // Turn LED on by default
 
     __builtin_enable_interrupts();
 
+    _CP0_SET_COUNT(0);
+    int hold = 0;
     while(1) {
 	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 		  // remember the core timer runs at half the CPU speed
+        // Clock is at 48 MHz, ticks occur at 24 MHz
+        // Need to wait 0.5 ms, 2 kHz toggle
+        // 24 Mhz/2 kHz = 12,000 counts
+        if (_CP0_GET_COUNT() > 12000) {
+            LATAbits.LATA4 = !LATAbits.LATA4;
+            _CP0_SET_COUNT(0);
+        }
+        
+        int current_time = 0;
+        while(PORTBbits.RB4 == 0) {
+            current_time = _CP0_GET_COUNT();
+            hold = 1;
+        }
+        if (hold == 1) {
+            _CP0_SET_COUNT(current_time);
+            hold = 0;
+        }
+        
     }
 }
