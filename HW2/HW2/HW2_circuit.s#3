@@ -13315,7 +13315,7 @@ Source: www.cypressindustries.com</description>
 <net name="MCLR" class="0">
 <segment>
 <pinref part="U$6" gate="G$1" pin="IN"/>
-<label x="132.08" y="7.62" size="1.778" layer="95"/>
+<label x="129.54" y="2.54" size="1.778" layer="95"/>
 <wire x1="129.54" y1="2.54" x2="129.54" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="R3" gate="G$1" pin="1"/>
 </segment>
