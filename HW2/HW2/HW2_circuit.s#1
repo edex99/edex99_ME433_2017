@@ -13060,7 +13060,7 @@ Source: www.cypressindustries.com</description>
 </classes>
 <parts>
 <part name="U$1" library="ME433" deviceset="PIC32MX250F128B" device=""/>
-<part name="U$2" library="ME433" deviceset="RESONATOR" device=""/>
+<part name="8MHZ" library="ME433" deviceset="RESONATOR" device=""/>
 <part name="U$4" library="ME433" deviceset="MCP1702" device=""/>
 <part name="+3V1" library="ME433" deviceset="+3V3" device=""/>
 <part name="P+1" library="ME433" deviceset="+5V" device=""/>
@@ -13092,7 +13092,7 @@ Source: www.cypressindustries.com</description>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="35.56" y="5.08"/>
-<instance part="U$2" gate="G$1" x="-25.4" y="-20.32"/>
+<instance part="8MHZ" gate="G$1" x="-25.4" y="-20.32"/>
 <instance part="U$4" gate="G$1" x="101.6" y="53.34"/>
 <instance part="+3V1" gate="G$1" x="35.56" y="55.88"/>
 <instance part="P+1" gate="1" x="27.94" y="55.88"/>
@@ -13200,7 +13200,7 @@ Source: www.cypressindustries.com</description>
 <pinref part="C6" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="2.GND"/>
+<pinref part="8MHZ" gate="G$1" pin="2.GND"/>
 <wire x1="-15.24" y1="-20.32" x2="-7.62" y2="-20.32" width="0.1524" layer="91"/>
 <label x="-15.24" y="-20.32" size="1.778" layer="95"/>
 </segment>
@@ -13247,7 +13247,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="OSC2" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="1.OSC2"/>
+<pinref part="8MHZ" gate="G$1" pin="1.OSC2"/>
 <wire x1="-15.24" y1="-15.24" x2="-7.62" y2="-15.24" width="0.1524" layer="91"/>
 <label x="-15.24" y="-15.24" size="1.778" layer="95"/>
 </segment>
@@ -13259,7 +13259,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="OSC1" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="3.OSC1"/>
+<pinref part="8MHZ" gate="G$1" pin="3.OSC1"/>
 <wire x1="-15.24" y1="-25.4" x2="-7.62" y2="-25.4" width="0.1524" layer="91"/>
 <label x="-15.24" y="-25.4" size="1.778" layer="95"/>
 </segment>
@@ -13315,7 +13315,7 @@ Source: www.cypressindustries.com</description>
 <net name="MCLR" class="0">
 <segment>
 <pinref part="U$6" gate="G$1" pin="IN"/>
-<label x="132.08" y="7.62" size="1.778" layer="95"/>
+<label x="129.54" y="2.54" size="1.778" layer="95"/>
 <wire x1="129.54" y1="2.54" x2="129.54" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="R3" gate="G$1" pin="1"/>
 </segment>
