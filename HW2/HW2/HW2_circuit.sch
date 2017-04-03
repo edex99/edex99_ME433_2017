@@ -9560,9 +9560,9 @@ This 6 pin header contains all the lines necessary for programming most PIC micr
 <pin name="S2" x="0" y="-2.54" visible="off" length="short" direction="pas" rot="R90"/>
 </symbol>
 <symbol name="SLIDE_SWITCH">
-<pin name="2.VBUS" x="-12.7" y="5.08" length="middle"/>
-<pin name="3.OUT" x="12.7" y="0" length="middle" rot="R180"/>
-<pin name="4.GND" x="-12.7" y="-5.08" length="middle"/>
+<pin name="2.5V" x="12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="3.VBUS" x="-12.7" y="0" length="middle"/>
+<pin name="4.OPEN" x="12.7" y="-5.08" length="middle" rot="R180"/>
 <wire x1="-10.16" y1="7.62" x2="-10.16" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="-10.16" y1="-7.62" x2="10.16" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="10.16" y1="-7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
@@ -13135,9 +13135,9 @@ Source: www.cypressindustries.com</description>
 <devices>
 <device name="" package="JST-5-PTH">
 <connects>
-<connect gate="G$1" pin="2.VBUS" pad="2"/>
-<connect gate="G$1" pin="3.OUT" pad="3"/>
-<connect gate="G$1" pin="4.GND" pad="4"/>
+<connect gate="G$1" pin="2.5V" pad="2"/>
+<connect gate="G$1" pin="3.VBUS" pad="3"/>
+<connect gate="G$1" pin="4.OPEN" pad="4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -13245,9 +13245,9 @@ Source: www.cypressindustries.com</description>
 <label x="-43.18" y="-10.16" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$3" gate="G$1" pin="3.OUT"/>
-<wire x1="-30.48" y1="60.96" x2="-22.86" y2="60.96" width="0.1524" layer="91"/>
-<label x="-27.94" y="60.96" size="1.778" layer="95"/>
+<pinref part="U$3" gate="G$1" pin="2.5V"/>
+<wire x1="-30.48" y1="66.04" x2="-22.86" y2="66.04" width="0.1524" layer="91"/>
+<label x="-30.48" y="66.04" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -13341,11 +13341,6 @@ Source: www.cypressindustries.com</description>
 <pinref part="X1" gate="G41" pin="5.GND"/>
 <wire x1="-17.78" y1="5.08" x2="-10.16" y2="5.08" width="0.1524" layer="91"/>
 <label x="-15.24" y="5.08" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="U$3" gate="G$1" pin="4.GND"/>
-<wire x1="-55.88" y1="55.88" x2="-60.96" y2="55.88" width="0.1524" layer="91"/>
-<label x="-60.96" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="OSC2" class="0">
@@ -13695,9 +13690,9 @@ Source: www.cypressindustries.com</description>
 <label x="-15.24" y="15.24" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$3" gate="G$1" pin="2.VBUS"/>
-<wire x1="-55.88" y1="66.04" x2="-60.96" y2="66.04" width="0.1524" layer="91"/>
-<label x="-60.96" y="66.04" size="1.778" layer="95"/>
+<pinref part="U$3" gate="G$1" pin="3.VBUS"/>
+<wire x1="-55.88" y1="60.96" x2="-63.5" y2="60.96" width="0.1524" layer="91"/>
+<label x="-60.96" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

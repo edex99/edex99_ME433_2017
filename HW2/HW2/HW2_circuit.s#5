@@ -13110,7 +13110,7 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <busses>
 </busses>
 <nets>
-<net name="5V" class="0">
+<net name="+5V" class="0">
 <segment>
 <pinref part="P+1" gate="1" pin="+5V"/>
 <wire x1="27.94" y1="53.34" x2="27.94" y2="48.26" width="0.1524" layer="91"/>
@@ -13142,11 +13142,6 @@ This footprint was designed to help hold the alignment of a through-hole compone
 </segment>
 </net>
 <net name="3V3" class="0">
-<segment>
-<pinref part="+3V1" gate="G$1" pin="+3V3"/>
-<wire x1="35.56" y1="53.34" x2="35.56" y2="48.26" width="0.1524" layer="91"/>
-<label x="35.56" y="50.8" size="1.778" layer="95"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="28.AVDD"/>
 <wire x1="60.96" y1="38.1" x2="53.34" y2="38.1" width="0.1524" layer="91"/>
@@ -13572,6 +13567,13 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <pinref part="J2" gate="G$1" pin="3"/>
 <wire x1="-45.72" y1="27.94" x2="-38.1" y2="27.94" width="0.1524" layer="91"/>
 <label x="-43.18" y="27.94" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="+3V3" class="0">
+<segment>
+<pinref part="+3V1" gate="G$1" pin="+3V3"/>
+<wire x1="35.56" y1="53.34" x2="35.56" y2="48.26" width="0.1524" layer="91"/>
+<label x="35.56" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

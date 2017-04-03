@@ -13180,10 +13180,6 @@ Source: www.cypressindustries.com</description>
 <junction x="83.82" y="55.88"/>
 </segment>
 <segment>
-<wire x1="-17.78" y1="15.24" x2="-10.16" y2="15.24" width="0.1524" layer="91"/>
-<label x="-15.24" y="15.24" size="1.778" layer="95"/>
-</segment>
-<segment>
 <wire x1="60.96" y1="-27.94" x2="53.34" y2="-27.94" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="15.VBUS"/>
 <label x="55.88" y="-27.94" size="1.778" layer="95"/>
@@ -13192,6 +13188,11 @@ Source: www.cypressindustries.com</description>
 <pinref part="J3" gate="G$1" pin="2"/>
 <wire x1="-45.72" y1="-10.16" x2="-38.1" y2="-10.16" width="0.1524" layer="91"/>
 <label x="-43.18" y="-10.16" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="X1" gate="G41" pin="1.VBUS"/>
+<wire x1="-17.78" y1="15.24" x2="-10.16" y2="15.24" width="0.1524" layer="91"/>
+<label x="-15.24" y="15.24" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -13247,10 +13248,6 @@ Source: www.cypressindustries.com</description>
 <label x="-15.24" y="-20.32" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="-17.78" y1="5.08" x2="-10.16" y2="5.08" width="0.1524" layer="91"/>
-<label x="-15.24" y="5.08" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="GND"/>
 <wire x1="-17.78" y1="43.18" x2="-10.16" y2="43.18" width="0.1524" layer="91"/>
 <label x="-17.78" y="43.18" size="1.778" layer="95"/>
@@ -13285,6 +13282,11 @@ Source: www.cypressindustries.com</description>
 <wire x1="-45.72" y1="-12.7" x2="-38.1" y2="-12.7" width="0.1524" layer="91"/>
 <label x="-43.18" y="-12.7" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="X1" gate="G41" pin="5.GND"/>
+<wire x1="-17.78" y1="5.08" x2="-10.16" y2="5.08" width="0.1524" layer="91"/>
+<label x="-15.24" y="5.08" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="OSC2" class="0">
 <segment>
@@ -13312,35 +13314,38 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="D-" class="0">
 <segment>
-<wire x1="-17.78" y1="12.7" x2="-10.16" y2="12.7" width="0.1524" layer="91"/>
-<label x="-15.24" y="12.7" size="1.778" layer="95"/>
-</segment>
-<segment>
 <wire x1="60.96" y1="7.62" x2="53.34" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="22.D-"/>
 <label x="55.88" y="7.62" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="X1" gate="G41" pin="2.D-"/>
+<wire x1="-17.78" y1="12.7" x2="-10.16" y2="12.7" width="0.1524" layer="91"/>
+<label x="-15.24" y="12.7" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="D+" class="0">
-<segment>
-<wire x1="-17.78" y1="10.16" x2="-10.16" y2="10.16" width="0.1524" layer="91"/>
-<label x="-15.24" y="10.16" size="1.778" layer="95"/>
-</segment>
 <segment>
 <wire x1="60.96" y1="2.54" x2="53.34" y2="2.54" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="21.D+"/>
 <label x="55.88" y="2.54" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="X1" gate="G41" pin="3.D+"/>
+<wire x1="-17.78" y1="10.16" x2="-10.16" y2="10.16" width="0.1524" layer="91"/>
+<label x="-15.24" y="10.16" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="USBID" class="0">
-<segment>
-<wire x1="-17.78" y1="7.62" x2="-10.16" y2="7.62" width="0.1524" layer="91"/>
-<label x="-15.24" y="7.62" size="1.778" layer="95"/>
-</segment>
 <segment>
 <wire x1="17.78" y1="-27.94" x2="10.16" y2="-27.94" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="14.USBID"/>
 <label x="10.16" y="-27.94" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="X1" gate="G41" pin="4.ID"/>
+<wire x1="-17.78" y1="7.62" x2="-10.16" y2="7.62" width="0.1524" layer="91"/>
+<label x="-15.24" y="7.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$3" class="0">
