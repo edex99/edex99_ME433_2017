@@ -13064,17 +13064,17 @@ Source: www.cypressindustries.com</description>
 <part name="U$4" library="ME433" deviceset="MCP1702" device=""/>
 <part name="+3V1" library="ME433" deviceset="+3V3" device=""/>
 <part name="P+1" library="ME433" deviceset="+5V" device=""/>
-<part name="U$5" library="ME433" deviceset="BUTTON" device=""/>
+<part name="U$5" library="ME433" deviceset="BUTTON" device="" value="USER"/>
 <part name="GND1" library="ME433" deviceset="GND" device=""/>
 <part name="POWER" library="ME433" deviceset="LED" device="3MM" value="RED"/>
 <part name="A4" library="ME433" deviceset="LED" device="3MM" value="A4/LED"/>
 <part name="C1" library="ME433" deviceset="CPOL-US" device="B45181B" value="10 uF"/>
 <part name="C2" library="ME433" deviceset="CPOL-US" device="B45181B" value="10 uF"/>
-<part name="U$6" library="ME433" deviceset="BUTTON" device=""/>
+<part name="U$6" library="ME433" deviceset="BUTTON" device="" value="RESET"/>
 <part name="J2" library="ME433" deviceset="CONN_08" device="&quot;" value="LEFT"/>
 <part name="J3" library="ME433" deviceset="CONN_08" device="&quot;" value="RIGHT"/>
 <part name="X1" library="ME433" deviceset="MINI-USB_SHIELD5P2-" device="32005-601"/>
-<part name="SLIDE" library="ME433" deviceset="SLIDE_SWITCH" device=""/>
+<part name="ON" library="ME433" deviceset="SLIDE_SWITCH" device=""/>
 <part name="U$7" library="ME433" deviceset="PICKIT32" device="" value="PICKIT3"/>
 <part name="R1" library="ME433" deviceset="R-US_" device="0207/10" value="330"/>
 <part name="R2" library="ME433" deviceset="R-US_" device="0207/10" value="10k"/>
@@ -13106,7 +13106,7 @@ Source: www.cypressindustries.com</description>
 <instance part="J2" gate="G$1" x="-50.8" y="30.48"/>
 <instance part="J3" gate="G$1" x="-50.8" y="-5.08"/>
 <instance part="X1" gate="G41" x="-22.86" y="10.16" rot="MR0"/>
-<instance part="SLIDE" gate="G$1" x="-43.18" y="60.96"/>
+<instance part="ON" gate="G$1" x="-43.18" y="60.96"/>
 <instance part="U$7" gate="G$1" x="-15.24" y="40.64" rot="MR0"/>
 <instance part="R1" gate="G$1" x="88.9" y="-12.7" rot="R90"/>
 <instance part="R2" gate="G$1" x="109.22" y="12.7" rot="R90"/>
@@ -13147,7 +13147,7 @@ Source: www.cypressindustries.com</description>
 <label x="-43.18" y="-10.16" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="SLIDE" gate="G$1" pin="2.5V"/>
+<pinref part="ON" gate="G$1" pin="2.5V"/>
 <wire x1="-50.8" y1="55.88" x2="-50.8" y2="48.26" width="0.1524" layer="91"/>
 <label x="-50.8" y="50.8" size="1.778" layer="95"/>
 </segment>
@@ -13574,7 +13574,7 @@ Source: www.cypressindustries.com</description>
 <label x="-15.24" y="15.24" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="SLIDE" gate="G$1" pin="3.VBUS"/>
+<pinref part="ON" gate="G$1" pin="3.VBUS"/>
 <wire x1="-43.18" y1="55.88" x2="-43.18" y2="48.26" width="0.1524" layer="91"/>
 <label x="-43.18" y="50.8" size="1.778" layer="95"/>
 </segment>

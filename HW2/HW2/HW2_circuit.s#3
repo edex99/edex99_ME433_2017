@@ -6121,19 +6121,19 @@ Source: http://www.cypressindustries.com/pdf/32005-601.pdf</description>
 <text x="-4.3979" y="-7.8527" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="SLIDE_SWITCH">
-<pad name="P$1" x="-4" y="0" drill="1"/>
-<pad name="P$2" x="4" y="0" drill="1"/>
-<pad name="2" x="-2" y="0" drill="0.8"/>
-<pad name="3" x="0" y="0" drill="0.8"/>
-<pad name="4" x="2" y="0" drill="0.8"/>
-<wire x1="-4.3" y1="2.15" x2="-4.3" y2="-2.15" width="0.4064" layer="21"/>
-<wire x1="-4.3" y1="-2.15" x2="4.3" y2="-2.15" width="0.4064" layer="21"/>
-<wire x1="4.3" y1="-2.15" x2="4.3" y2="2.15" width="0.4064" layer="21"/>
-<wire x1="4.3" y1="2.15" x2="-4.3" y2="2.15" width="0.4064" layer="21"/>
-<wire x1="0" y1="2" x2="0" y2="4" width="0.254" layer="21"/>
-<wire x1="0" y1="4" x2="2" y2="4" width="0.254" layer="21"/>
-<wire x1="2" y1="4" x2="2" y2="2" width="0.254" layer="21"/>
-<text x="5.08" y="2.54" size="1.27" layer="21">&gt;NAME</text>
+<pad name="P$1" x="4" y="0" drill="1" rot="R180"/>
+<pad name="P$2" x="-4" y="0" drill="1" rot="R180"/>
+<pad name="2" x="2" y="0" drill="0.8" rot="R180"/>
+<pad name="3" x="0" y="0" drill="0.8" rot="R180"/>
+<pad name="4" x="-2" y="0" drill="0.8" rot="R180"/>
+<wire x1="4.3" y1="2.15" x2="4.3" y2="-2.15" width="0.4064" layer="22"/>
+<wire x1="4.3" y1="-2.15" x2="-4.3" y2="-2.15" width="0.4064" layer="22"/>
+<wire x1="-4.3" y1="-2.15" x2="-4.3" y2="2.15" width="0.4064" layer="22"/>
+<wire x1="-4.3" y1="2.15" x2="4.3" y2="2.15" width="0.4064" layer="22"/>
+<wire x1="0" y1="2" x2="0" y2="4" width="0.254" layer="22"/>
+<wire x1="0" y1="4" x2="-2" y2="4" width="0.254" layer="22"/>
+<wire x1="-2" y1="4" x2="-2" y2="2" width="0.254" layer="22"/>
+<text x="1.27" y="2.54" size="1.27" layer="21">&gt;NAME</text>
 <text x="5.08" y="0" size="1.27" layer="21">&gt;VALUE</text>
 </package>
 <package name="PICKIT32">
@@ -13060,7 +13060,7 @@ Source: www.cypressindustries.com</description>
 </classes>
 <parts>
 <part name="U$1" library="ME433" deviceset="PIC32MX250F128B" device=""/>
-<part name="U$2" library="ME433" deviceset="RESONATOR" device=""/>
+<part name="8MHZ" library="ME433" deviceset="RESONATOR" device=""/>
 <part name="U$4" library="ME433" deviceset="MCP1702" device=""/>
 <part name="+3V1" library="ME433" deviceset="+3V3" device=""/>
 <part name="P+1" library="ME433" deviceset="+5V" device=""/>
@@ -13092,7 +13092,7 @@ Source: www.cypressindustries.com</description>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="35.56" y="5.08"/>
-<instance part="U$2" gate="G$1" x="-25.4" y="-20.32"/>
+<instance part="8MHZ" gate="G$1" x="-25.4" y="-20.32"/>
 <instance part="U$4" gate="G$1" x="101.6" y="53.34"/>
 <instance part="+3V1" gate="G$1" x="35.56" y="55.88"/>
 <instance part="P+1" gate="1" x="27.94" y="55.88"/>
@@ -13200,7 +13200,7 @@ Source: www.cypressindustries.com</description>
 <pinref part="C6" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="2.GND"/>
+<pinref part="8MHZ" gate="G$1" pin="2.GND"/>
 <wire x1="-15.24" y1="-20.32" x2="-7.62" y2="-20.32" width="0.1524" layer="91"/>
 <label x="-15.24" y="-20.32" size="1.778" layer="95"/>
 </segment>
@@ -13247,7 +13247,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="OSC2" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="1.OSC2"/>
+<pinref part="8MHZ" gate="G$1" pin="1.OSC2"/>
 <wire x1="-15.24" y1="-15.24" x2="-7.62" y2="-15.24" width="0.1524" layer="91"/>
 <label x="-15.24" y="-15.24" size="1.778" layer="95"/>
 </segment>
@@ -13259,7 +13259,7 @@ Source: www.cypressindustries.com</description>
 </net>
 <net name="OSC1" class="0">
 <segment>
-<pinref part="U$2" gate="G$1" pin="3.OSC1"/>
+<pinref part="8MHZ" gate="G$1" pin="3.OSC1"/>
 <wire x1="-15.24" y1="-25.4" x2="-7.62" y2="-25.4" width="0.1524" layer="91"/>
 <label x="-15.24" y="-25.4" size="1.778" layer="95"/>
 </segment>
