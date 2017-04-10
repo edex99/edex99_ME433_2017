@@ -1,5 +1,6 @@
 #include <xc.h>           // processor SFR definitions
 #include <sys/attribs.h>  // __ISR macro
+#include "math.h"
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -61,14 +62,21 @@ int main() {
 
     __builtin_enable_interrupts();
 
-    unsigned char v_out = 0;
+    unsigned char v_sawtooth = 0;
+    double v_sin = 0;
+    unsigned char sample_num = 0;
     _CP0_SET_COUNT(0);
     while(1) {
         // Clock is at 48 MHz, ticks occur at 24 MHz, 24 Mhz/1 kHz = 24,000 counts
         if (_CP0_GET_COUNT() > 24000) {
-            v_out += 255.0/200.0;
             _CP0_SET_COUNT(0);
-        }
-        
+            v_sawtooth += 255.0/200.0;
+            setVoltage(0, v_sawtooth);
+            
+            v_sin = sin(2.0*M_PI*( (double) sample_num)/100.0);
+            setVoltage(1, (unsigned char) (v_sin*255.0/(2.0*M_PI)) );
+            if (sample_num >= 100)
+                sample_num = 0;
+        }  
     }
 }
