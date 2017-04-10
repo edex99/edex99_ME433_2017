@@ -81,7 +81,7 @@ int main() {
             //    v_sawtooth = 0.0;
             setVoltage(0, (unsigned char) v_sawtooth);
             
-            v_sin = sin(2.0*M_PI*( (double) (sample_num%100)/100.0);
+            v_sin = sin(2.0*M_PI*( (double) (sample_num%100))/100.0);
             setVoltage(1, (unsigned char) ((v_sin+1)*255/2) );
             if (sample_num >= 200) {
                 sample_num = 0;
