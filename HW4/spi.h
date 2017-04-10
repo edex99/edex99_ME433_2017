@@ -7,6 +7,6 @@
 
 void initSPI1();
 unsigned char spi1_io(unsigned char o);
-void setVoltage(char channel, char voltage);
+void setVoltage(unsigned char channel, unsigned char voltage);
 
 #endif

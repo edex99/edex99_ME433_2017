@@ -1,6 +1,7 @@
 #include <xc.h>           // processor SFR definitions
 #include <sys/attribs.h>  // __ISR macro
 #include "math.h"
+#include "spi.h"
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -45,38 +46,48 @@ int main() {
 
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
     __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
-
     // 0 data RAM access wait states
     BMXCONbits.BMXWSDRM = 0x0;
-
     // enable multi vector interrupts
     INTCONbits.MVEC = 0x1;
-
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
-
     // do your TRIS and LAT commands here
     TRISBbits.TRISB4 = 1;   // Button is input
     TRISAbits.TRISA4 = 0;   // LED is output
     LATAbits.LATA4 = 1;     // Turn LED on by default
+    // initialize SPI
+    initSPI1();
 
     __builtin_enable_interrupts();
 
-    unsigned char v_sawtooth = 0;
+    double v_sawtooth = 0;
     double v_sin = 0;
     unsigned char sample_num = 0;
+                
     _CP0_SET_COUNT(0);
     while(1) {
         // Clock is at 48 MHz, ticks occur at 24 MHz, 24 Mhz/1 kHz = 24,000 counts
         if (_CP0_GET_COUNT() > 24000) {
             _CP0_SET_COUNT(0);
-            v_sawtooth += 255.0/200.0;
-            setVoltage(0, v_sawtooth);
             
-            v_sin = sin(2.0*M_PI*( (double) sample_num)/100.0);
-            setVoltage(1, (unsigned char) (v_sin*255.0/(2.0*M_PI)) );
-            if (sample_num >= 100)
+            //CS = 0;
+            //spi1_io(255);
+            //CS = 1;
+            //setVoltage(1,128);
+            
+            v_sawtooth = sample_num*(255.0/200.0);
+            //if (v_sawtooth > 255.0)
+            //    v_sawtooth = 0.0;
+            setVoltage(0, (unsigned char) v_sawtooth);
+            
+            v_sin = sin(2.0*M_PI*( (double) (sample_num%100)/100.0);
+            setVoltage(1, (unsigned char) ((v_sin+1)*255/2) );
+            if (sample_num >= 200) {
                 sample_num = 0;
+                //LATAbits.LATA4 = !LATAbits.LATA4;
+            }
+            sample_num++;
         }  
     }
 }
