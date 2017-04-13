@@ -6,9 +6,9 @@
 #include "i2c_master_noint.h"
 
 void i2c_master_setup(void) {
-  I2C2BRG = 235; //some number for 100kHz;
+  I2C2BRG = 233; //some number for 100kHz;
                  // I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
-                 // PGD = 52 ns for PIC32MX1XX/2XX family
+                 // PGD = 104 ns for PIC32MX1XX/2XX family
                  // using 48 MHz, I2CBRG = 235
   I2C2CONbits.ON = 1;               // turn on the I2C2 module
 }
@@ -25,7 +25,7 @@ void i2c_master_restart(void) {
 }
 
 void i2c_master_send(unsigned char byte) { // send a byte to slave
-  I2C1TRN = byte;                   // if an address, bit 0 = 0 for write, 1 for read
+  I2C2TRN = byte;                   // if an address, bit 0 = 0 for write, 1 for read
   while(I2C2STATbits.TRSTAT) { ; }  // wait for the transmission to finish
   if(I2C2STATbits.ACKSTAT) {        // if this is high, slave has not acknowledged
     // ("I2C2 Master: failed to receive ACK\r\n");
@@ -35,7 +35,7 @@ void i2c_master_send(unsigned char byte) { // send a byte to slave
 unsigned char i2c_master_recv(void) { // receive a byte from the slave
     I2C2CONbits.RCEN = 1;             // start receiving data
     while(!I2C2STATbits.RBF) { ; }    // wait to receive the data
-    return I2C1RCV;                   // read and return the data
+    return I2C2RCV;                   // read and return the data
 }
 
 void i2c_master_ack(int val) {        // sends ACK = 0 (slave should send another byte)

@@ -56,19 +56,16 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // initialize expander
-    //initExpander();
+    initExpander();
 
     __builtin_enable_interrupts();
-
-    //i2c_master_setup();
-    //ANSELBbits.ANSB2 = 0;   // turn off Analog on PIC32 for B2 and B3
-    //ANSELBbits.ANSB3 = 0;
-    initExpander();
     
     while(1) {
 	    //If GP7 is high, output high on GP0, otherwise low
-        //char c = getExpander();
-        //if ((c>>7) == 1)
-        setExpander(0,1);
+        char c = getExpander();
+        if ((c>>7) == 0)
+            setExpander(0,1);
+        else
+            setExpander(0,0);
     }
 }

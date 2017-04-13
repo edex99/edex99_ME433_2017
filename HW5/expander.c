@@ -6,7 +6,6 @@ void initExpander() {
     
     i2c_master_setup();     // setup I2C on PIC32
     
-    /*
     // Set IO direction of pins
     i2c_master_start();
     i2c_master_send(OPCODE_WRITE);  // device write opcode
@@ -20,7 +19,7 @@ void initExpander() {
     i2c_master_send(0x06);          // GPPU register
     i2c_master_send(0b10000000);    // IO7 has pull-up resistor enabled
     i2c_master_stop(); 
-    */
+    
 }
 
 char getExpander() {
@@ -41,10 +40,12 @@ void setExpander(char pin, char level) {
     // first read current state
     char c = getExpander();
     // set or clear bit depending on level, anything other than 0 set to 1
-    if (level==0)
+    if (level==0) {
         c &= ~(1<<pin);             // clears bit
-    else
+    }
+    else {
         c |= (1<<pin);              // sets bit  
+    }
     
     i2c_master_start();
     i2c_master_send(OPCODE_WRITE);  // device write opcode
