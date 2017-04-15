@@ -190,13 +190,15 @@ void LCD_clearScreen(unsigned short color) {
 		}
 }
 
-LCD_drawCharacter(char c,unsigned short x, unsigned short y,unsigned short color1, unsigned short color2) {
+void LCD_drawCharacter(char c,unsigned short x, unsigned short y,unsigned short color1, unsigned short color2) {
     int i = c-0x20;
     int j;
     for (j=0;j<5;j++) {
         unsigned char b = ASCII[i][j];
         int k;
         for (k=0;k<8;k++) {
+            if ((x>122) || (y>119))
+                break;
             if ((b>>k)%2 == 1) {
                 LCD_drawPixel(x+j,y+k,color1);
             }
@@ -204,5 +206,41 @@ LCD_drawCharacter(char c,unsigned short x, unsigned short y,unsigned short color
                 LCD_drawPixel(x+j,y+k,color2);
             }
         }
+    }
+}
+
+void LCD_writeString(char* str,unsigned short x, unsigned short y,unsigned short color1, unsigned short color2) {
+    int xpos = x;
+    int i = 0;
+    while (str[i] != '\0') {
+        LCD_drawCharacter(str[i],xpos, y,color1,color2);
+        xpos += 5;
+        i++;
+    }
+}
+
+void LCD_drawBar(signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2, unsigned short color3) {
+    int i,j;
+    if (length>0) {
+        for (i=x_center;i<(x_center+length);i++) {
+            for (j=y_center;j<(y_center+width);j++) {
+                LCD_drawPixel(i,j,color1);                
+            }
+        }
+    }
+    else {
+        for (i=x_center;i<(x_center-length);i++) {
+            for (j=y_center;j<(y_center+width);j++) {
+                LCD_drawPixel(i,j,color3);                
+            }
+        }
+        for (i=x_center;i>(x_center+length);i--) {
+            for (j=y_center;j<(y_center+width);j++) {
+                LCD_drawPixel(i,j,color2);                
+            }
+        }
+        for (j=y_center;j<(y_center+width);j++) {
+                LCD_drawPixel(x_center+length,j,color3);               
+            }
     }
 }

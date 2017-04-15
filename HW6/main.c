@@ -1,6 +1,7 @@
 #include <xc.h>           // processor SFR definitions
 #include <sys/attribs.h>  // __ISR macro
 #include "ILI9163C.h"
+#include <stdio.h>
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -66,12 +67,30 @@ int main() {
     
     __builtin_enable_interrupts();
 
-    LCD_clearScreen(CYAN);
-    LCD_drawCharacter('R',64, 64,RED,CYAN);
+    LCD_clearScreen(GREEN);
+    char str[15];
+    sprintf(str,"Hello world");
+    LCD_writeString(str,28,32,BLACK,GREEN);
     
+    _CP0_SET_COUNT(0);
+    int count = 0;
+    char counter[5];
     while(1) {
-        
-
-        
+        if (_CP0_GET_COUNT() > 48000000/2/5) {
+            _CP0_SET_COUNT(0);
+            if (count>50)
+                count = -50;
+            sprintf(counter,"%d!  ",count);
+            if (count > 0)
+                LCD_writeString(counter,87,32,BLUE,GREEN);
+            else if (count == 0)
+                LCD_writeString(counter,87,32,BLACK,GREEN);
+            else
+                LCD_writeString(counter,87,32,RED,GREEN);
+            LCD_drawBar(count,3,64,64,BLUE,RED,GREEN);
+            count++;
+        }
+        //sprintf(counter,"FPS = %4.2f",4800000.0/(_CP0_GET_COUNT()*2));
+        //LCD_writeString(counter,40,90,BLACK,GREEN);
     }
 }
