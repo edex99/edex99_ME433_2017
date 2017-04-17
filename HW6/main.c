@@ -74,10 +74,12 @@ int main() {
     
     _CP0_SET_COUNT(0);
     int count = 0;
-    char counter[5];
+    char counter[10];
+    char fps[20];
     while(1) {
-        if (_CP0_GET_COUNT() > 48000000/2/5) {
+        if (_CP0_GET_COUNT() > (48000000/2)/5) {
             _CP0_SET_COUNT(0);
+            LCD_writeString(str,28,32,BLACK,GREEN);
             if (count>50)
                 count = -50;
             sprintf(counter,"%d!  ",count);
@@ -87,10 +89,11 @@ int main() {
                 LCD_writeString(counter,87,32,BLACK,GREEN);
             else
                 LCD_writeString(counter,87,32,RED,GREEN);
-            LCD_drawBar(count,3,64,64,BLUE,RED,GREEN);
+            LCD_drawBar(count,3,64,54,BLUE,RED,GREEN);
+            LCD_writeString(fps,40,90,BLACK,GREEN);
+            //if ((count == -50) || (count == 0))
+            sprintf(fps,"FPS = %4.2f",(48000000/2.0)/_CP0_GET_COUNT());
             count++;
         }
-        //sprintf(counter,"FPS = %4.2f",4800000.0/(_CP0_GET_COUNT()*2));
-        //LCD_writeString(counter,40,90,BLACK,GREEN);
     }
 }

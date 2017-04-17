@@ -221,26 +221,26 @@ void LCD_writeString(char* str,unsigned short x, unsigned short y,unsigned short
 
 void LCD_drawBar(signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2, unsigned short color3) {
     int i,j;
-    if (length>0) {
+    if (length>0) {  // drawing to the right
         for (i=x_center;i<(x_center+length);i++) {
             for (j=y_center;j<(y_center+width);j++) {
                 LCD_drawPixel(i,j,color1);                
             }
         }
     }
-    else {
-        for (i=x_center;i<(x_center-length);i++) {
+    else {  // drawing to left
+        for (i=x_center;i<(x_center-length);i++) { // clear right side
             for (j=y_center;j<(y_center+width);j++) {
                 LCD_drawPixel(i,j,color3);                
             }
         }
-        for (i=x_center;i>(x_center+length);i--) {
+        for (i=x_center;i>(x_center+length);i--) { // draw pixels to left
             for (j=y_center;j<(y_center+width);j++) {
                 LCD_drawPixel(i,j,color2);                
             }
         }
-        for (j=y_center;j<(y_center+width);j++) {
+        for (j=y_center;j<(y_center+width);j++) { // clear pixels to left
                 LCD_drawPixel(x_center+length,j,color3);               
-            }
+        }
     }
 }
