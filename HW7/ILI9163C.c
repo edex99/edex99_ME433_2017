@@ -223,14 +223,14 @@ void LCD_drawBar(char c,signed short length,signed short width,unsigned short x_
     // if c == 'h', draw horizontal bar, if c == 'v', draw vertical bar, default horizontal
     int i,j;
     //clear bar line
-    for (i=0;i<(128);i++) {
+    /*for (i=0;i<(128);i++) {
             for (j=y_center;j<(y_center+width);j++) {
                 if (c == 'v')
                     LCD_drawPixel(j,i,color2);   
                 else
                     LCD_drawPixel(i,j,color2);                
             }
-    }
+    }*/
     if (length>0) {  // drawing to the right
         for (i=x_center;i<(x_center+length);i++) {
             for (j=y_center;j<(y_center+width);j++) {
