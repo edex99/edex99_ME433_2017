@@ -179,7 +179,7 @@ void LCD_clearScreen(unsigned short); // set the color of every pixel
 
 void LCD_drawCharacter(char c,unsigned short x, unsigned short y,unsigned short color1, unsigned short color2); // draw a character with top left at x,y
 void LCD_writeString(char* str,unsigned short x, unsigned short y,unsigned short color1, unsigned short color2);
-void LCD_drawBar(signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2);
+void LCD_drawBar(char c,signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2);
 void LCD_drawProgressBar(signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2,unsigned short color3);
 
 #endif

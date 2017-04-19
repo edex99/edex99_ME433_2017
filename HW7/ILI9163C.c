@@ -219,35 +219,51 @@ void LCD_writeString(char* str,unsigned short x, unsigned short y,unsigned short
     }
 }
 
-void LCD_drawBar(signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2) {
+void LCD_drawBar(char c,signed short length,signed short width,unsigned short x_center, unsigned short y_center,unsigned short color1, unsigned short color2) {
+    // if c == 'h', draw horizontal bar, if c == 'v', draw vertical bar, default horizontal
     int i,j;
     //clear bar line
     for (i=0;i<(128);i++) {
             for (j=y_center;j<(y_center+width);j++) {
-                LCD_drawPixel(i,j,color2);                
+                if (c == 'v')
+                    LCD_drawPixel(j,i,color2);   
+                else
+                    LCD_drawPixel(i,j,color2);                
             }
     }
     if (length>0) {  // drawing to the right
         for (i=x_center;i<(x_center+length);i++) {
             for (j=y_center;j<(y_center+width);j++) {
-                LCD_drawPixel(i,j,color1);                
+                if (c == 'v')
+                    LCD_drawPixel(j,i,color1);   
+                else
+                    LCD_drawPixel(i,j,color1);               
             }
         }
         for (i=x_center+length;i<128;i++) {
             for (j=y_center;j<(y_center+width);j++) {
-                LCD_drawPixel(i,j,color2);                
+                if (c == 'v')
+                    LCD_drawPixel(j,i,color2);   
+                else
+                    LCD_drawPixel(i,j,color2);               
             }
         }
     }
     else {
         for (i=x_center;i>(x_center+length);i--) { // draw pixels to left
             for (j=y_center;j<(y_center+width);j++) {
-                LCD_drawPixel(i,j,color1);                
+                if (c == 'v')
+                    LCD_drawPixel(j,i,color1);   
+                else
+                    LCD_drawPixel(i,j,color1);                
             }
         }
         for (i=x_center+length;i>0;i--) {
             for (j=y_center;j<(y_center+width);j++) {
-                LCD_drawPixel(i,j,color2);                
+                if (c == 'v')
+                    LCD_drawPixel(j,i,color2);   
+                else
+                    LCD_drawPixel(i,j,color2);               
             }
         }
     }
