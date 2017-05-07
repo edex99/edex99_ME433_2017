@@ -268,6 +268,8 @@ void APP_Initialize(void) {
     //appData.emulateMouse = true;
     appData.hidInstance = 0;
     appData.isMouseReportSendBusy = false;
+    
+    initIMU();
 }
 
 /******************************************************************************
@@ -317,11 +319,18 @@ void APP_Tasks(void) {
         case APP_STATE_MOUSE_EMULATE:
             
             // every 50th loop, or 20 times per second
-            if (inc == 100) {
+            if (inc == 10) {
+                unsigned char data[4];
+                int length = 4;
+                unsigned char start_reg = 0x28;
+                I2C_read_multiple(OPCODE_WRITE >> 1, start_reg, data, length);
+                signed short accel_x = -(data[1] << 8) | data[0];
+                signed short accel_y = -(data[3] << 8) | data[2];
+                
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) 1;
-                appData.yCoordinate = (int8_t) 1;
+                appData.xCoordinate = (int8_t) (-accel_y/3000);
+                appData.yCoordinate = (int8_t) (accel_x/3000);
                 inc = 0;
             }
             else {
