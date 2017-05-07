@@ -32,14 +32,18 @@ clean = onCleanup(@()fclose(mySerial));
 
 has_quit = false;
 % menu loop
-fprintf(mySerial,'r\n'); 
-for i=1:100
-    data(i,:) = fscanf(mySerial,'%d %d %d %d %d'); % read in data from PIC32; assume ints, in mA
-end
+selection = 'r';
+fprintf(mySerial,'%c',selection);
 
-figure;
-plot(data(:,2));
-hold on;
-plot(data(:,3));
-plot(data(:,4));
-plot(data(:,5));
+while ~has_quit
+    for i=1:100
+        data(i,:) = fscanf(mySerial,'%d %d %d %d %d'); % read in data from PIC32; assume ints, in mA
+    end
+    has_quit = true;
+end
+    figure;
+    plot(data(:,2));
+    hold on;
+    plot(data(:,3));
+    plot(data(:,4));
+    plot(data(:,5));

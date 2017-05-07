@@ -71,16 +71,15 @@ char str[64];
 unsigned char data[14];
 
 // filter variables
-signed short maf[5] = {0};      // all set to 0 to start
-char maf_count = 0;
+signed short maf[10] = {0};      // all set to 0 to start
+int maf_count = 0;
 
 double a = 0.8;
 double b = 0.2;
 signed short prev_iir = 0;
 
-double fir_coeff[6] = {0.0264, 0.1405, 0.3331, 0.3331, 0.1405, 0.0264};
-signed short fir[5] = {0};
-signed short curr_fir = 0;
+double fir_coeff[11] = {0.0145,0.0306,0.0725,0.1245,0.1665,0.1826,0.1665,0.1245,0.0725,0.0306,0.0145};
+signed short fir[10] = {0};
 
 // *****************************************************************************
 /* Application Data
@@ -458,7 +457,8 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);*/
                 if (appData.readBuffer[0] == 'r') {
                     go = 1;
-                    len = sprintf(dataOut,"index\tax\tay\taz\tgx\tgy\tgz\r\n");
+                    len = 1;//sprintf(dataOut,"index\tax\tay\taz\tgx\tgy\tgz\r\n");
+                    dataOut[0] = 0;
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         dataOut, len,
@@ -473,7 +473,7 @@ void APP_Tasks(void) {
                 }
                     
             }
-            else if ((go == 1) && (i<100)) {
+            else if ((go == 1) && (i<500)) {
                 if (_CP0_GET_COUNT() - printTime < (48000000 / 2 /100)) {
                     dataOut[0] = 0;
                     len = 1;
@@ -495,33 +495,36 @@ void APP_Tasks(void) {
                     // maf filter
                     maf[maf_count] = accel_z;
                     maf_count++;
-                    if (maf_count > (sizeof maf/sizeof *maf))
+                    if (maf_count >= (sizeof maf/sizeof *maf))
                         maf_count = 0;
-                    int j;
-                    signed long maf_sum = 0;
+                    int j = 0;
+                    signed long long maf_sum = 0;
                     for (j=0;j<(sizeof maf/sizeof *maf);j++) {
                         maf_sum += maf[j];
                     }
-                    signed short maf_avg = maf_sum/(sizeof maf/sizeof *maf);
+                    //signed short maf_avg = maf_sum/(sizeof maf/sizeof *maf);
+                    signed short maf_avg = (signed short) (maf_sum/(sizeof maf/sizeof *maf));
                     
                     // IIR filter
                     signed short curr_iir = accel_z;
-                    signed short iir = a*prev_iir + b*curr_iir;
-                    prev_iir = curr_iir;  
+                    signed short iir = (signed short) (a*prev_iir + b*curr_iir);
+                    prev_iir = iir;  
                     
                     // FIR filter, coefficients from fir1(5,0.1)
-                    for (j=1;j<(sizeof fir/sizeof *fir);j++) {
+                    for (j=(sizeof fir/sizeof *fir)-1;j>0;j--) {
                         fir[j] = fir[j-1];
                     }
                     fir[0] = accel_z;
-                    signed short fir_avg = 0;
+                    double fir_sum = 0.0;
                     for (j=1;j<(sizeof fir_coeff/sizeof *fir_coeff);j++) {
-                        fir_avg += fir[j-1]*fir_coeff[j];
+                        fir_sum += fir[j-1]*fir_coeff[j];
                     }
-                    fir_avg += fir[0];
-                    fir_avg /= (sizeof fir_coeff/sizeof *fir_coeff);
+                    fir_sum += fir_coeff[0];
+                    //fir_avg /= (sizeof fir_coeff/sizeof *fir_coeff);
+                    signed short fir_avg = (signed short) fir_sum;
                     
-                    len = sprintf(dataOut,"%d %d %d %d %d\r\n",i,accel_z,maf_avg,iir,fir_avg);
+                    len = sprintf(dataOut,"%d, %d, %d, %d, %d %d;\r\n",i,accel_z,maf_avg,iir,fir_avg,maf_count);
+                    //len = sprintf(dataOut, "%d %d %d %d %d %d %d %d %d %d %d\r\n", fir[0], fir[1], fir[2], fir[3], fir[4], fir[5], fir[6], fir[7], fir[8], fir[9]);
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         dataOut, len,
@@ -538,7 +541,7 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT();
             }
-            if (i>99) {
+            if (i>499) {
                 go = 0;
                 i = 0;
             }
