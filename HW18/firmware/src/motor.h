@@ -8,5 +8,6 @@
 
 void initMotors();
 void pwm_set(signed int pwm1, signed int pwm2);
+void calc_control(int line_center);
 
 #endif

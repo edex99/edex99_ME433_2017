@@ -18,6 +18,12 @@
             android:orientation="vertical"
             android:visibility="visible">
 
+            <ImageView
+                android:id="@+id/imageViewMap"
+                android:layout_width="800px"
+                android:layout_height="600px"
+                android:layout_gravity="center" />
+
             <SeekBar
                 android:id="@+id/seek1"
                 android:layout_width="fill_parent"
@@ -38,14 +44,16 @@
             <SurfaceView
                 android:id="@+id/surfaceview"
                 android:layout_width="640px"
-                android:layout_height="480px" />
+                android:layout_height="480px"
+                android:layout_gravity="center" />
 
             <TextureView
                 android:id="@+id/textureview"
                 android:layout_width="640px"
-                android:layout_height="480px" />
+                android:layout_height="480px"
+                android:layout_gravity="center" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/textView01"
                 android:text="initial value "
                 android:layout_width="wrap_content"
@@ -77,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/holo_green_light"
                     />
-            </ScrollView>
+            </ScrollView>-->
 
         </LinearLayout>
     </ScrollView>

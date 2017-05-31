@@ -32,6 +32,7 @@ void initMotors(){
 
 }
 
+
 void pwm_set(signed int pwm1, signed int pwm2) {
     // motor 1
     if (pwm1 <= 0) {
@@ -63,7 +64,20 @@ void pwm_set(signed int pwm1, signed int pwm2) {
         else
             OC4RS = 100*PWM_MUL;
     }
+}
 
+void calc_control(int line_center) {
+    int pwm1 = 100;         // left or right?
+    int pwm2 = 100;         // left or right?
+    int kp = 10;
+    int pixel_center = 240;
+    if (line_center > pixel_center) {
+        pwm1 -= kp*(line_center - pixel_center);
+    }
+    else if (line_center < pixel_center) {
+        pwm2 += kp*(line_center - pixel_center);
+    }
+    pwm_set(pwm1, pwm2);
 }
 
 

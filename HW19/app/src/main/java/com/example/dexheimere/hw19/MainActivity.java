@@ -6,27 +6,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.graphics.SurfaceTexture;
-
 
 import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
@@ -35,6 +40,10 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -46,14 +55,17 @@ import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 import static android.graphics.Color.rgb;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class MainActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
     SeekBar myControl;
-    TextView myTextView;
-    Button button;
-    TextView myTextView2;
-    ScrollView myScrollView;
-    TextView myTextView3;
+    //TextView myTextView;
+    //Button button;
+    //TextView myTextView2;
+    //ScrollView myScrollView;
+    //TextView myTextView3;
 
     private Camera mCamera;
     private TextureView mTextureView;
@@ -63,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
     private TextView mTextView4;
+
+    //private Bitmap map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/techCup2017.png");
+    private Bitmap map_bmp = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888);
+    private Canvas canvas_map = new Canvas(map_bmp);
+    private ImageView imageView;
 
     static long prevtime = 0; // for FPS calculation
 
@@ -78,24 +95,28 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         myControl = (SeekBar) findViewById(R.id.seek1);
-        myTextView = (TextView) findViewById(R.id.textView01);
-        myTextView.setText("Enter whatever you Like!");
-        myTextView2 = (TextView) findViewById(R.id.textView02);
-        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
-        myTextView3 = (TextView) findViewById(R.id.textView03);
-        button = (Button) findViewById(R.id.button1);
+        //myTextView = (TextView) findViewById(R.id.textView01);
+        //myTextView.setText("Enter whatever you Like!");
+        //myTextView2 = (TextView) findViewById(R.id.textView02);
+        //myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
+        //myTextView3 = (TextView) findViewById(R.id.textView03);
+        //button = (Button) findViewById(R.id.button1);
         mTextView4 = (TextView) findViewById(R.id.cameraStatus);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/map.png");
+        imageView = (ImageView) findViewById(R.id.imageViewMap);
+
+        /*button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myTextView2.setText("value on click is "+myControl.getProgress());
+                myTextView2.setText("value on click is " + myControl.getProgress());
                 String sendString = String.valueOf(myControl.getProgress()) + '\n';
                 try {
                     sPort.write(sendString.getBytes(), 10); // 10 is the timeout
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
             }
-        });
+        });*/
 
         setMyControlListener();
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -117,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         } else {
             mTextView4.setText("no camera permissions");
         }
+
     }
 
     private void setMyControlListener() {
@@ -127,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                myTextView.setText("The value is: "+progress);
+                //myTextView.setText("The value is: " + progress);
             }
 
             @Override
@@ -160,13 +182,14 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             };
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         stopIoManager();
-        if(sPort != null){
-            try{
+        if (sPort != null) {
+            try {
                 sPort.close();
-            } catch (IOException e){ }
+            } catch (IOException e) {
+            }
             sPort = null;
         }
         finish();
@@ -177,12 +200,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         super.onResume();
 
         ProbeTable customTable = new ProbeTable();
-        customTable.addProduct(0x04D8,0x000A, CdcAcmSerialDriver.class);
+        customTable.addProduct(0x04D8, 0x000A, CdcAcmSerialDriver.class);
         UsbSerialProber prober = new UsbSerialProber(customTable);
 
         final List<UsbSerialDriver> availableDrivers = prober.findAllDrivers(manager);
 
-        if(availableDrivers.isEmpty()) {
+        if (availableDrivers.isEmpty()) {
             //check
             return;
         }
@@ -190,12 +213,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         UsbSerialDriver driver = availableDrivers.get(0);
         sPort = driver.getPorts().get(0);
 
-        if (sPort == null){
+        if (sPort == null) {
             //check
-        }else{
+        } else {
             final UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
             UsbDeviceConnection connection = usbManager.openDevice(driver.getDevice());
-            if (connection == null){
+            if (connection == null) {
                 //check
                 PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent("com.android.example.USB_PERMISSION"), 0);
                 usbManager.requestPermission(driver.getDevice(), pi);
@@ -206,11 +229,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                 sPort.open(connection);
                 sPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
-            }catch (IOException e) {
+            } catch (IOException e) {
                 //check
-                try{
+                try {
                     sPort.close();
-                } catch (IOException e1) { }
+                } catch (IOException e1) {
+                }
                 sPort = null;
                 return;
             }
@@ -218,21 +242,21 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         onDeviceStateChange();
     }
 
-    private void stopIoManager(){
-        if(mSerialIoManager != null) {
+    private void stopIoManager() {
+        if (mSerialIoManager != null) {
             mSerialIoManager.stop();
             mSerialIoManager = null;
         }
     }
 
     private void startIoManager() {
-        if(sPort != null){
+        if (sPort != null) {
             mSerialIoManager = new SerialInputOutputManager(sPort, mListener);
             mExecutor.submit(mSerialIoManager);
         }
     }
 
-    private void onDeviceStateChange(){
+    private void onDeviceStateChange() {
         stopIoManager();
         startIoManager();
     }
@@ -244,11 +268,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         String rxString = null;
         try {
             rxString = new String(data, "UTF-8"); // put the data you got into a string
-            myTextView3.append(rxString);
-            myScrollView.fullScroll(View.FOCUS_DOWN);
+            //myTextView3.append(rxString);
+            //myScrollView.fullScroll(View.FOCUS_DOWN);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
     }
 
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -285,20 +310,26 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         SeekBar seek1 = (SeekBar) findViewById(R.id.seek1);
         int line_center = -1;
 
+        // min RGB [138, 135, 86]
+        // max RGB [231, 232, 233]
+        // give constant upper bound tolerance, slider bar lower bound
+
+        int com = 500;
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
             int thresh = seek1.getProgress(); // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             //int startY = 200; // which row in the bitmap to analyze to read
-            for (int j = 0; j < bmp.getHeight(); j+=5) {
+            for (int j = 0; j < bmp.getHeight(); j += 5) {
                 bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
 
-                int sum = 0; int num_pixels = 0;
+                int sum = 0;
+                int num_pixels = 0;
                 // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++) {
                     if (((red(pixels[i]) - green(pixels[i])) < thresh) && ((green(pixels[i]) - blue(pixels[i])) < thresh)
-                        && ((red(pixels[i]) - green(pixels[i])) > -thresh) && ((green(pixels[i]) - blue(pixels[i])) > -thresh)
-                        && ((blue(pixels[i]) - red(pixels[i])) > -thresh) && ((blue(pixels[i]) - red(pixels[i])) < thresh)) {
+                            && ((red(pixels[i]) - green(pixels[i])) > -thresh) && ((green(pixels[i]) - blue(pixels[i])) > -thresh)
+                            && ((blue(pixels[i]) - red(pixels[i])) > -thresh) && ((blue(pixels[i]) - red(pixels[i])) < thresh)) {
                         pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
                         sum += i;
                         ++num_pixels;
@@ -307,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                 // update center of mass
                 if (num_pixels == 0)
                     continue;
-                int com = sum/num_pixels;
+                com = sum / num_pixels;
                 //if (j == bmp.getHeight()/2)
                 //    line_center = com;
                 canvas.drawCircle(com, j, 5, paint1); // x position, y position, diameter, color
@@ -327,10 +358,25 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
+        // draw dot on map
+        Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(map_bmp, 0, 0, null);
+        tempCanvas.drawCircle(com, 300, 5, paint1);
+        imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+
         // calculate the FPS to see how fast the code is running
         long nowtime = System.currentTimeMillis();
         long diff = nowtime - prevtime;
         mTextView4.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
+
+        String sendString =  String.valueOf(com) + '\n';
+        try {
+                sPort.write(sendString.getBytes(), 100); // 10 is the timeout
+        } catch (IOException e) {
+        }
     }
+
 }
+
