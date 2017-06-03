@@ -47,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
+
+    private int x;
+    private int y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +272,16 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         String rxString = null;
         try {
             rxString = new String(data, "UTF-8"); // put the data you got into a string
+            //Scanner sc = new Scanner(rxString);
+            //x = sc.nextInt();
+            //y = sc.nextInt();
+
+            /*// draw dot on map
+            Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+            Canvas tempCanvas = new Canvas(tempBitmap);
+            tempCanvas.drawBitmap(map_bmp, 0, 0, null);
+            tempCanvas.drawCircle(x, y, 2, paint1);
+            imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));*/
             //myTextView3.append(rxString);
             //myScrollView.fullScroll(View.FOCUS_DOWN);
         } catch (UnsupportedEncodingException e) {
@@ -314,7 +328,11 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         // max RGB [231, 232, 233]
         // give constant upper bound tolerance, slider bar lower bound
 
-        int com = 500;
+        int com_x = 0;
+        int com_y = 0;
+        long com_sum = 0;
+        long num_com = 0;
+        int sum_y = 0;
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
             int thresh = seek1.getProgress(); // comparison value
@@ -323,29 +341,44 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             for (int j = 0; j < bmp.getHeight(); j += 5) {
                 bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
 
-                int sum = 0;
+                int sum_x = 0;
                 int num_pixels = 0;
                 // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++) {
-                    if (((red(pixels[i]) - green(pixels[i])) < thresh) && ((green(pixels[i]) - blue(pixels[i])) < thresh)
+                    /*if (((red(pixels[i]) - green(pixels[i])) < thresh) && ((green(pixels[i]) - blue(pixels[i])) < thresh)
                             && ((red(pixels[i]) - green(pixels[i])) > -thresh) && ((green(pixels[i]) - blue(pixels[i])) > -thresh)
-                            && ((blue(pixels[i]) - red(pixels[i])) > -thresh) && ((blue(pixels[i]) - red(pixels[i])) < thresh)) {
-                        pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
-                        sum += i;
+                            && ((blue(pixels[i]) - red(pixels[i])) > -thresh) && ((blue(pixels[i]) - red(pixels[i])) < thresh)) {*/
+                    if ( (red(pixels[i]) > 138 + thresh) && (green(pixels[i]) > 135 + thresh) && (blue(pixels[i]) > 86+thresh)
+                            && (red(pixels[i]) < 231+thresh) && (green(pixels[i]) < 232+thresh) && (blue(pixels[i]) < 233+thresh)
+                            && (red(pixels[i]) + green(pixels[i]) + blue(pixels[i]) < 730 ) ) {
+                        //pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                        sum_x += i;
                         ++num_pixels;
                     }
                 }
                 // update center of mass
-                if (num_pixels == 0)
+                if (num_pixels == 0) {
                     continue;
-                com = sum / num_pixels;
-                //if (j == bmp.getHeight()/2)
-                //    line_center = com;
-                canvas.drawCircle(com, j, 5, paint1); // x position, y position, diameter, color
+                }
+                com_sum += sum_x / num_pixels;
+                ++num_com;
+                sum_y += j;
+
+                //canvas.drawCircle(com, j, 5, paint1); // x position, y position, diameter, color
                 //pixels[com] = rgb(255,0,0);
                 // update the row
                 bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
             }
+            if (num_com == 0) {
+                com_x = -1;
+                com_y = -1;
+            }
+            else {
+                com_x = (int) (com_sum / num_com);
+                com_y = (int) (sum_y / num_com);
+                canvas.drawCircle(com_x, com_y, 5, paint1);
+            }
+
         }
 
         // draw a circle at some position
@@ -362,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
         Canvas tempCanvas = new Canvas(tempBitmap);
         tempCanvas.drawBitmap(map_bmp, 0, 0, null);
-        tempCanvas.drawCircle(com, 300, 5, paint1);
+        tempCanvas.drawCircle(com_x, 300, 5, paint1);
         imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
 
         // calculate the FPS to see how fast the code is running
@@ -371,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         mTextView4.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
 
-        String sendString =  String.valueOf(com) + '\n';
+        String sendString =  String.valueOf(com_x) + '\n';
         try {
                 sPort.write(sendString.getBytes(), 100); // 10 is the timeout
         } catch (IOException e) {

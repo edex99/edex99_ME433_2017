@@ -1,10 +1,10 @@
 #include "motor.h"
 
 void initMotors(){
-    RPB15Rbits.RPB15R = 0b0101;   // OC1 at B15
-    RPB13Rbits.RPB13R = 0b0101;   // OC4 at B13
-    TRISBbits.TRISB8 = 0;       // B14 is output pin (enable 1)
-    TRISBbits.TRISB9 = 0;       // B9 is output pin (enable 2)
+    RPB15Rbits.RPB15R = 0b0101;   // OC1 at B15 (enable 1)
+    RPB13Rbits.RPB13R = 0b0101;   // OC4 at B13 (enable 2)
+    TRISBbits.TRISB8 = 0;       // B8 is output pin 
+    TRISBbits.TRISB9 = 0;       // B9 is output pin 
     
     // initialize OC1
     OC1CONbits.OC32 = 0;				// Use either Timer2 or Timer3
