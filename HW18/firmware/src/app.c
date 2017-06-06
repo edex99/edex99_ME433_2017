@@ -72,7 +72,8 @@ int startTime = 0;
 char rx[64]; // the raw data
 int rxPos = 0; // how much data has been stored
 int gotRx = 0; // the flag
-int line_center = -1;
+int pwm1 = 0;
+int pwm2 = 0;
 // *****************************************************************************
 /* Application Data
 
@@ -414,8 +415,8 @@ void APP_Tasks(void) {
                     // if you got a newline
                     if (appData.readBuffer[ii] == '\n' || appData.readBuffer[ii] == '\r') {
                         rx[rxPos] = 0; // end the array
-                        sscanf(rx, "%d", &line_center); // get the int out of the array
-                        calc_control(line_center);
+                        sscanf(rx, "%d %d", &pwm1, &pwm2); // get the int out of the array
+                        pwm_set(pwm1, pwm2);
                         gotRx = 1; // set the flag
                         break; // get out of the while loop
                     } else if (appData.readBuffer[ii] == 0) {
@@ -466,7 +467,7 @@ void APP_Tasks(void) {
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
             if (gotRx) {
-                len = sprintf(dataOut, "got: %d\r\n", line_center);
+                len = sprintf(dataOut, "got: %d %d\r\n", pwm1, pwm2);
                 
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,

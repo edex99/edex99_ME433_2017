@@ -58,6 +58,7 @@ import static android.graphics.Color.rgb;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import static java.lang.Math.abs;
 
 public class MainActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
@@ -107,8 +108,9 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         //button = (Button) findViewById(R.id.button1);
         mTextView4 = (TextView) findViewById(R.id.cameraStatus);
 
-        map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/map.png");
-        imageView = (ImageView) findViewById(R.id.imageViewMap);
+        // uncomment this
+        //map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/map.png");
+        //imageView = (ImageView) findViewById(R.id.imageViewMap);
 
         /*button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             //x = sc.nextInt();
             //y = sc.nextInt();
 
-            /*// draw dot on map
-            Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+            // draw dot on map
+            /*Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
             Canvas tempCanvas = new Canvas(tempBitmap);
             tempCanvas.drawBitmap(map_bmp, 0, 0, null);
             tempCanvas.drawCircle(x, y, 2, paint1);
@@ -322,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         // every time there is a new Camera preview frame
         mTextureView.getBitmap(bmp);
         SeekBar seek1 = (SeekBar) findViewById(R.id.seek1);
-        int line_center = -1;
 
         // min RGB [138, 135, 86]
         // max RGB [231, 232, 233]
@@ -344,14 +345,15 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                 int sum_x = 0;
                 int num_pixels = 0;
                 // in the row, see if there is more green than red
-                for (int i = 0; i < bmp.getWidth(); i++) {
+                for (int i = 0; i < bmp.getWidth(); i+=1) {
                     /*if (((red(pixels[i]) - green(pixels[i])) < thresh) && ((green(pixels[i]) - blue(pixels[i])) < thresh)
                             && ((red(pixels[i]) - green(pixels[i])) > -thresh) && ((green(pixels[i]) - blue(pixels[i])) > -thresh)
                             && ((blue(pixels[i]) - red(pixels[i])) > -thresh) && ((blue(pixels[i]) - red(pixels[i])) < thresh)) {*/
-                    if ( (red(pixels[i]) > 138 + thresh) && (green(pixels[i]) > 135 + thresh) && (blue(pixels[i]) > 86+thresh)
+                    /*if ( (red(pixels[i]) > 138 + thresh) && (green(pixels[i]) > 135 + thresh) && (blue(pixels[i]) > 86+thresh)
                             && (red(pixels[i]) < 231+thresh) && (green(pixels[i]) < 232+thresh) && (blue(pixels[i]) < 233+thresh)
-                            && (red(pixels[i]) + green(pixels[i]) + blue(pixels[i]) < 730 ) ) {
-                        //pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                            && (red(pixels[i]) + green(pixels[i]) + blue(pixels[i]) < 730 ) ) {*/
+                    if ( red(pixels[i]) - green(pixels[i]) > thresh ) {
+                        pixels[i] = rgb(255, 0, 0); // over write the pixel with pure green
                         sum_x += i;
                         ++num_pixels;
                     }
@@ -364,14 +366,15 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                 ++num_com;
                 sum_y += j;
 
-                //canvas.drawCircle(com, j, 5, paint1); // x position, y position, diameter, color
+                //com_x = sum_x/num_pixels;
+                //canvas.drawCircle(com_x, j, 5, paint1); // x position, y position, diameter, color
                 //pixels[com] = rgb(255,0,0);
                 // update the row
                 bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
             }
             if (num_com == 0) {
-                com_x = -1;
-                com_y = -1;
+                com_x = bmp.getWidth()/2;
+                com_y = bmp.getHeight()/2;
             }
             else {
                 com_x = (int) (com_sum / num_com);
@@ -381,22 +384,24 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
 
         }
 
-        // draw a circle at some position
-        //int pos = 50;
-        //if (line_center != -1)
-        //    canvas.drawCircle(line_center, 240, 5, paint1); // x position, y position, diameter, color
-
+        double x_weight = 2;
+        double y_weight = 0.01;
+        int motor_offset = (int) (x_weight*(com_x-bmp.getWidth()/2) * y_weight*com_y );
+        int neutral_power = 3000;  // pwm are 0 to 8000
+        int pwm1 = neutral_power + motor_offset;
+        int pwm2 = neutral_power - motor_offset;
+        
         // write the pos as text
         //canvas.drawText("pos = " + pos, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
         // draw dot on map
-        Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+        /*Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
         Canvas tempCanvas = new Canvas(tempBitmap);
         tempCanvas.drawBitmap(map_bmp, 0, 0, null);
         tempCanvas.drawCircle(com_x, 300, 5, paint1);
-        imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+        imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));*/
 
         // calculate the FPS to see how fast the code is running
         long nowtime = System.currentTimeMillis();
@@ -404,11 +409,12 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         mTextView4.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
 
-        String sendString =  String.valueOf(com_x) + '\n';
+        String sendString =  String.valueOf(pwm1) + ' ' + String.valueOf(pwm2) + '\n';
         try {
-                sPort.write(sendString.getBytes(), 100); // 10 is the timeout
+            sPort.write(sendString.getBytes(), 100); // 10 is the timeout
         } catch (IOException e) {
         }
+
     }
 
 }

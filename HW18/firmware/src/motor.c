@@ -37,46 +37,43 @@ void pwm_set(signed int pwm1, signed int pwm2) {
     // motor 1
     if (pwm1 <= 0) {
         LATBbits.LATB8 = 1;
-        if (pwm1 >= -100)
+        if (pwm1 >= -PR-1)
             OC1RS = -pwm1*PWM_MUL;
         else
-            OC1RS = 100*PWM_MUL;
+            OC1RS = (PR+1)*PWM_MUL;
     }
     else {
         LATBbits.LATB8 = 0;
-        if (pwm1 <= 100)
+        if (pwm1 <= PR+1)
             OC1RS = pwm1*PWM_MUL;
         else
-            OC1RS = 100*PWM_MUL;
+            OC1RS = (PR+1)*PWM_MUL;
     }
     // motor 2
     if (pwm2 <= 0) {
         LATBbits.LATB9 = 0;
-        if (pwm2 >= -100)
+        if (pwm2 >= -PR-1)
             OC4RS = -pwm2*PWM_MUL;
         else
-            OC4RS = 100*PWM_MUL;
+            OC4RS = (PR+1)*PWM_MUL;
     }
     else {
         LATBbits.LATB9 = 1;
-        if (pwm2 <= 100)
+        if (pwm2 <= PR+1)
             OC4RS = pwm2*PWM_MUL;
         else
-            OC4RS = 100*PWM_MUL;
+            OC4RS = (PR+1)*PWM_MUL;
     }
 }
 
-void calc_control(int line_center) {
+void calc_control(int motor_offset) {
     int pwm1 = 100;         // left or right?
     int pwm2 = 100;         // left or right?
-    int kp = 10;
-    int pixel_center = 240;
-    if (line_center > pixel_center) {
-        pwm1 -= kp*(line_center - pixel_center);
-    }
-    else if (line_center < pixel_center) {
-        pwm2 += kp*(line_center - pixel_center);
-    }
+    if (motor_offset >= 0)
+        pwm2 -= motor_offset;
+    else 
+        pwm1 += motor_offset;
+    
     pwm_set(pwm1, pwm2);
 }
 
