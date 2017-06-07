@@ -348,6 +348,8 @@ void APP_Initialize(void) {
     
     /* Initialize motors*/
     initMotors();
+    /* Initialize vive*/
+    //initVive();
 
     startTime = _CP0_GET_COUNT();
 }
@@ -447,9 +449,13 @@ void APP_Tasks(void) {
             /* Check if a character was received or a switch was pressed.
              * The isReadComplete flag gets updated in the CDC event handler. */
 
-            if (gotRx || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 1000)) {
+            if (gotRx || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 1000)) {  // send 30 times a second
                 appData.state = APP_STATE_SCHEDULE_WRITE;
             }
+            
+            /*if ( _CP0_GET_COUNT() - startTime > (48000000 / 2 / 1)) {  // send 30 times a second
+                appData.state = APP_STATE_SCHEDULE_WRITE;
+            }*/
 
             break;
 
@@ -466,9 +472,17 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
+            //double x = get_x();
+            //double y = get_y();
+            // need to scale on android to pixel value
+            //len = sprintf(dataOut, "%f %f\r\n", x, y);
+            
             if (gotRx) {
-                len = sprintf(dataOut, "got: %d %d\r\n", pwm1, pwm2);
-                
+                //double x = get_x();
+                //double y = get_y();
+                // need to scale on android to pixel value
+                len = sprintf(dataOut, "%d %d\r\n", pwm1, pwm2);
+       
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         dataOut, len,

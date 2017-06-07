@@ -63,8 +63,9 @@ import static java.lang.Math.abs;
 public class MainActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
     SeekBar myControl;
-    //TextView myTextView;
-    //Button button;
+    TextView myTextView1;
+    Button button1;
+    Button button2;
     //TextView myTextView2;
     //ScrollView myScrollView;
     //TextView myTextView3;
@@ -79,19 +80,18 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
     private TextView mTextView4;
 
     //private Bitmap map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/techCup2017.png");
-    private Bitmap map_bmp = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888);
+    private Bitmap map_bmp = Bitmap.createBitmap(460, 453, Bitmap.Config.ARGB_8888);
     private Canvas canvas_map = new Canvas(map_bmp);
     private ImageView imageView;
 
     static long prevtime = 0; // for FPS calculation
+    static Boolean pause = Boolean.TRUE;
+    int motor_offset = 0;
 
     private UsbManager manager;
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
-
-    private int x;
-    private int y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,29 +100,37 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         myControl = (SeekBar) findViewById(R.id.seek1);
-        //myTextView = (TextView) findViewById(R.id.textView01);
+        myTextView1 = (TextView) findViewById(R.id.textView01);
         //myTextView.setText("Enter whatever you Like!");
         //myTextView2 = (TextView) findViewById(R.id.textView02);
         //myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         //myTextView3 = (TextView) findViewById(R.id.textView03);
-        //button = (Button) findViewById(R.id.button1);
+        button1 = (Button) findViewById(R.id.button1);
+        button2 = (Button) findViewById(R.id.button2);
         mTextView4 = (TextView) findViewById(R.id.cameraStatus);
 
         // uncomment this
-        //map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/map.png");
-        //imageView = (ImageView) findViewById(R.id.imageViewMap);
+        map_bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/map.png");
+        imageView = (ImageView) findViewById(R.id.imageViewMap);
+        // draw dot on map
+        Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(map_bmp, 0, 0, null);
+        imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
 
-        /*button.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myTextView2.setText("value on click is " + myControl.getProgress());
-                String sendString = String.valueOf(myControl.getProgress()) + '\n';
-                try {
-                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
-                } catch (IOException e) {
-                }
+                pause = Boolean.TRUE;
             }
-        });*/
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pause = Boolean.FALSE;
+            }
+        });
 
         setMyControlListener();
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -274,18 +282,25 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
         String rxString = null;
         try {
             rxString = new String(data, "UTF-8"); // put the data you got into a string
-            //Scanner sc = new Scanner(rxString);
-            //x = sc.nextInt();
-            //y = sc.nextInt();
+            Scanner sc = new Scanner(rxString);
+            //float x = sc.nextFloat();
+            //float y = sc.nextFloat();
+
+            //String coordinates = String.format("x = %f, y = %f", x, y);
+            //myTextView1.setText(coordinates);
+
+
+            /*x = 200;
+            y = 100;
 
             // draw dot on map
-            /*Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
-            Canvas tempCanvas = new Canvas(tempBitmap);
-            tempCanvas.drawBitmap(map_bmp, 0, 0, null);
-            tempCanvas.drawCircle(x, y, 2, paint1);
-            imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));*/
-            //myTextView3.append(rxString);
-            //myScrollView.fullScroll(View.FOCUS_DOWN);
+            if (!pause) {
+                Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+                Canvas tempCanvas = new Canvas(tempBitmap);
+                tempCanvas.drawBitmap(map_bmp, 0, 0, null);
+                tempCanvas.drawCircle(x, y, 2, paint1);
+                imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+                map_bmp = tempBitmap;} */
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -352,7 +367,8 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                     /*if ( (red(pixels[i]) > 138 + thresh) && (green(pixels[i]) > 135 + thresh) && (blue(pixels[i]) > 86+thresh)
                             && (red(pixels[i]) < 231+thresh) && (green(pixels[i]) < 232+thresh) && (blue(pixels[i]) < 233+thresh)
                             && (red(pixels[i]) + green(pixels[i]) + blue(pixels[i]) < 730 ) ) {*/
-                    if ( red(pixels[i]) - green(pixels[i]) > thresh ) {
+                    if ( (red(pixels[i]) - green(pixels[i]) > thresh) && (red(pixels[i]) - blue(pixels[i]) > thresh)
+                        && (red(pixels[i]) + green(pixels[i]) + blue(pixels[i]) < 700 ) ) {
                         pixels[i] = rgb(255, 0, 0); // over write the pixel with pure green
                         sum_x += i;
                         ++num_pixels;
@@ -375,45 +391,58 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             if (num_com == 0) {
                 com_x = bmp.getWidth()/2;
                 com_y = bmp.getHeight()/2;
+
+
             }
             else {
                 com_x = (int) (com_sum / num_com);
                 com_y = (int) (sum_y / num_com);
                 canvas.drawCircle(com_x, com_y, 5, paint1);
+
+                double x_weight = 2;
+                double y_weight = 0.01;
+                motor_offset = (int) (x_weight * (com_x - bmp.getWidth() / 2) * y_weight * com_y);
             }
 
         }
 
-        double x_weight = 2;
-        double y_weight = 0.01;
-        int motor_offset = (int) (x_weight*(com_x-bmp.getWidth()/2) * y_weight*com_y );
-        int neutral_power = 3000;  // pwm are 0 to 8000
-        int pwm1 = neutral_power + motor_offset;
-        int pwm2 = neutral_power - motor_offset;
-        
-        // write the pos as text
-        //canvas.drawText("pos = " + pos, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
-        // draw dot on map
-        /*Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
-        Canvas tempCanvas = new Canvas(tempBitmap);
-        tempCanvas.drawBitmap(map_bmp, 0, 0, null);
-        tempCanvas.drawCircle(com_x, 300, 5, paint1);
-        imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));*/
+        if (!pause) {
+            int neutral_power = 5000;  // pwm are 0 to 8000 //
+            // parameter set 1: x_weight = 2; y_weight = 0.02, neutral_power = 3000;
+            // parameter set2: x_weight = 2; y_weight = 0.015; neutral_power = 4000;
+            int pwm1 = neutral_power + motor_offset;
+            int pwm2 = neutral_power - motor_offset;
+
+            // draw dot on map
+            Bitmap tempBitmap = Bitmap.createBitmap(map_bmp.getWidth(), map_bmp.getHeight(), Bitmap.Config.RGB_565);
+            Canvas tempCanvas = new Canvas(tempBitmap);
+            tempCanvas.drawBitmap(map_bmp, 0, 0, null);
+            tempCanvas.drawCircle(com_x, com_y, 3, paint1);
+            imageView.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+            map_bmp = tempBitmap;
+
+            String sendString =  String.valueOf(pwm1) + ' ' + String.valueOf(pwm2) + '\n';
+                try {
+            sPort.write(sendString.getBytes(), 100); // 10 is the timeout
+            } catch (IOException e) {
+            }
+        }
+        else {
+            String sendString =  String.valueOf(0) + ' ' + String.valueOf(0) + '\n';
+                try {
+            sPort.write(sendString.getBytes(), 100); // 10 is the timeout
+            } catch (IOException e) {
+            }
+        }
 
         // calculate the FPS to see how fast the code is running
         long nowtime = System.currentTimeMillis();
         long diff = nowtime - prevtime;
         mTextView4.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
-
-        String sendString =  String.valueOf(pwm1) + ' ' + String.valueOf(pwm2) + '\n';
-        try {
-            sPort.write(sendString.getBytes(), 100); // 10 is the timeout
-        } catch (IOException e) {
-        }
 
     }
 
