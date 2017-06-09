@@ -1,6 +1,6 @@
 #include "vive.h"
 
-void initVive() {
+/*void initVive() {
 // initialize the sensor variables
     V1.prevMic = 0;
     V1.horzAng = 0;
@@ -21,10 +21,10 @@ void initVive() {
     IEC0bits.IC4IE = 1; // step 6: enable INT0 by setting IEC0<3>
 }
 
-double get_x() {
+/*double get_x() {
     return tan((V1.vertAng - 90.0) * DEG_TO_RAD) * LIGHTHOUSEHEIGHT;
 }
 
 double get_y() {
     return tan((V1.horzAng - 90.0) * DEG_TO_RAD) * LIGHTHOUSEHEIGHT;
-}
+}*/
